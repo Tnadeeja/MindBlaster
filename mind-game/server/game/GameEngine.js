@@ -203,11 +203,26 @@ function lockRound(io, game) {
     .map((x) => x.userId);
 
   // scoring (timeouts are non-winners too)
+  let hostEliminated = false;
   for (const p of actives) {
     const isWinner = winners.includes(p.id);
     if (!isWinner) {
       p.score -= 1;
-      if (p.score <= -10) p.eliminated = true;
+      if (p.score <= -10) {
+        p.eliminated = true;
+        // Check if eliminated player is the host
+        if (p.id === game.hostUserId) {
+          hostEliminated = true;
+        }
+      }
+    }
+  }
+  
+  // Transfer host to next active player if host was eliminated
+  if (hostEliminated) {
+    const newHost = activePlayers(game)[0];
+    if (newHost) {
+      game.hostUserId = newHost.id;
     }
   }
 
@@ -218,6 +233,7 @@ function lockRound(io, game) {
     average: result,
     finalOutput,
     winners,
+    hostUserId: game.hostUserId, // Include current host
     scores: game.players.map((p) => ({
       userId: p.id,
       name: p.name,

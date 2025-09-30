@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { sounds } from "../lib/sounds";
+import { Frown, Trophy, Medal, Award, X, Check, Gamepad2 } from "lucide-react";
 import WinnerCelebration from "../components/WinnerCelebration";
 
 export default function GameOver({ game }) {
   const over = game.gameOver || {};
   const sortedScores = [...(over.finalScores || [])].sort((a, b) => b.score - a.score);
+  
+  useEffect(() => {
+    // Play victory sound for winner, game over for others
+    if (over.winner) {
+      sounds.win();
+    } else {
+      sounds.gameOver();
+    }
+  }, []);
   
   const getMedalEmoji = (index) => {
     if (index === 0) return "🥇";
@@ -23,7 +34,9 @@ export default function GameOver({ game }) {
 
       {!over.winner && (
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontSize: '5rem', marginBottom: 16 }}>😔</div>
+          <div style={{ marginBottom: 16 }}>
+            <Frown size={80} color="#9ca3af" />
+          </div>
           <h1 style={{ fontSize: '3rem', marginBottom: 16 }}>Game Over!</h1>
           <p className="muted" style={{ fontSize: '1.2rem' }}>
             No winner - all players eliminated or game aborted
@@ -37,8 +50,9 @@ export default function GameOver({ game }) {
         borderRadius: 20,
         padding: 24
       }}>
-        <h3 style={{ marginTop: 0, marginBottom: 20, textAlign: 'center' }}>
-          🏅 Final Standings
+        <h3 style={{ marginTop: 0, marginBottom: 20, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <Trophy size={28} color="#fbbf24" />
+          Final Standings
         </h3>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -86,7 +100,19 @@ export default function GameOver({ game }) {
                   fontSize: '0.9rem',
                   color: p.eliminated ? '#f87171' : '#10b981'
                 }}>
-                  {p.eliminated ? '❌ Eliminated' : '✅ Survived'}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {p.eliminated ? (
+                      <>
+                        <X size={16} />
+                        Eliminated
+                      </>
+                    ) : (
+                      <>
+                        <Check size={16} />
+                        Survived
+                      </>
+                    )}
+                  </span>
                 </div>
               </div>
               
@@ -114,10 +140,16 @@ export default function GameOver({ game }) {
             padding: '16px 48px',
             fontSize: '1.2rem',
             background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)'
+            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            justifyContent: 'center',
+            margin: '0 auto'
           }}
         >
-          🎮 Play Again
+          <Gamepad2 size={24} />
+          Play Again
         </button>
       </div>
     </div>

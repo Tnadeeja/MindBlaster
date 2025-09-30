@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Scoreboard from "../components/Scoreboard";
 import { socket } from "../lib/socket";
+import { sounds } from "../lib/sounds";
+import { Drama, Target, BarChart3, Trophy, Play, Clock } from "lucide-react";
 
 export default function Reveal({ me, game, setGame, setView }) {
   const reveal = game.lastReveal || {};
@@ -9,14 +11,31 @@ export default function Reveal({ me, game, setGame, setView }) {
   const [waitingForHost, setWaitingForHost] = useState(true);
 
   useEffect(() => {
+    // Play reveal sound when component mounts
+    sounds.reveal();
+    
+    // Check if current player won or was eliminated
+    const isWinner = winners.has(me?.userId);
+    const currentPlayer = (reveal.scores || []).find(p => p.userId === me?.userId);
+    const wasEliminated = currentPlayer?.eliminated && currentPlayer?.score <= -10;
+    
+    if (isWinner) {
+      setTimeout(() => sounds.win(), 500);
+    } else if (wasEliminated) {
+      setTimeout(() => sounds.eliminate(), 500);
+    }
+  }, []);
+
+  useEffect(() => {
     const onStartNext = ({ roundNo, secondsLeft, scores }) => {
-      // Update round number and players when next round starts
+      sounds.roundStart();
       if (Array.isArray(scores)) {
         setGame((g) => ({ ...g, players: scores, currentRound: roundNo }));
       }
       setView("round");
     };
     const onGameOver = (payload) => {
+      sounds.gameOver();
       setGame((g) => ({ ...g, gameOver: payload }));
       setView("gameover");
     };
@@ -41,7 +60,10 @@ export default function Reveal({ me, game, setGame, setView }) {
   return (
     <div className="card">
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <h2 style={{ marginBottom: 8 }}>🎭 Round Results</h2>
+        <h2 style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <Drama size={32} color="#60a5fa" />
+          Round Results
+        </h2>
         <p className="muted">
           All picks are now revealed. See who came closest to the target!
         </p>
@@ -54,8 +76,11 @@ export default function Reveal({ me, game, setGame, setView }) {
         padding: 20,
         marginBottom: 20
       }}>
-        <h3 style={{ marginTop: 0, marginBottom: 16 }}>🎯 Player Picks</h3>
-        <div className="scores">
+        <h3 style={{ marginTop: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Target size={24} color="#60a5fa" />
+          Player Picks
+        </h3>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'nowrap', overflowX: 'auto' }}>
           {(reveal.picks || []).map((p) => (
             <div 
               key={p.userId} 
@@ -104,7 +129,10 @@ export default function Reveal({ me, game, setGame, setView }) {
         padding: 20,
         marginBottom: 20
       }}>
-        <h3 style={{ marginTop: 0, marginBottom: 16 }}>📊 Calculations</h3>
+        <h3 style={{ marginTop: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <BarChart3 size={24} color="#a78bfa" />
+          Calculations
+        </h3>
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
@@ -141,7 +169,10 @@ export default function Reveal({ me, game, setGame, setView }) {
         padding: 20,
         marginBottom: 20
       }}>
-        <h3 style={{ marginTop: 0, marginBottom: 16 }}>🏅 Leaderboard</h3>
+        <h3 style={{ marginTop: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Trophy size={24} color="#10b981" />
+          Leaderboard
+        </h3>
         <Scoreboard players={reveal.scores || []} />
       </div>
 
@@ -153,15 +184,21 @@ export default function Reveal({ me, game, setGame, setView }) {
             padding: '16px',
             fontSize: '1.2rem',
             background: 'linear-gradient(135deg, #10b981, #059669)',
-            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
+            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            justifyContent: 'center'
           }}
         >
-          ▶️ Start Next Round
+          <Play size={20} />
+          Start Next Round
         </button>
       ) : (
         <div className="pill center" style={{ padding: 20 }}>
-          <div style={{ fontSize: '1.1rem', marginBottom: 8 }}>
-            ⏳ Waiting for host...
+          <div style={{ fontSize: '1.1rem', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <Clock size={24} />
+            Waiting for host...
           </div>
           <div style={{ color: '#9ca3af', fontSize: '0.95rem' }}>
             The host will start the next round
