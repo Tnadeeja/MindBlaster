@@ -19,8 +19,8 @@ export default function Scoreboard({ players }) {
             marginBottom: 8
           }}>
             <div style={{
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               borderRadius: '50%',
               background: p.eliminated 
                 ? 'linear-gradient(135deg, #6b7280, #4b5563)'
@@ -29,10 +29,10 @@ export default function Scoreboard({ players }) {
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 700,
-              fontSize: '0.85rem',
+              fontSize: p.avatar ? '1.5rem' : '0.85rem',
               flexShrink: 0
             }}>
-              {p.seatNo}
+              {p.avatar || p.seatNo}
             </div>
             <div style={{ 
               fontWeight: 700,

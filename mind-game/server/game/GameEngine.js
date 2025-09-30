@@ -14,14 +14,14 @@ import { randomCode, randomId } from "../utils/ids.js";
  * - After reveal, ONLY host can start next round.
  */
 
-export function createGame(io, hostSocketId, hostName) {
+export function createGame(io, hostSocketId, hostName, hostAvatar) {
   const id = randomId("g");
   const code = randomCode(6);
   const game = {
     id,
     code,
     status: "WAITING",
-    players: [], // {id, socketId, name, score, eliminated, connected, seatNo}
+    players: [], // {id, socketId, name, score, eliminated, connected, seatNo, avatar}
     roundNo: 0,
     phase: "lobby", // 'lobby' | 'collect' | 'reveal' | 'over'
     picks: {}, // userId -> number
@@ -39,6 +39,7 @@ export function createGame(io, hostSocketId, hostName) {
     id: randomId("u"),
     socketId: hostSocketId,
     name: hostName?.trim() || "Player",
+    avatar: hostAvatar || "🧙‍♂️",
     score: 0,
     eliminated: false,
     connected: true,
@@ -55,7 +56,7 @@ export function findGameByCode(code) {
   return getGameByCode(code);
 }
 
-export function joinGame(game, socketId, name) {
+export function joinGame(game, socketId, name, avatar) {
   if (game.status !== "WAITING") throw new Error("Game not joinable");
   const taken = game.players.length;
   if (taken >= game.config.capacity) throw new Error("Game full");
@@ -64,6 +65,7 @@ export function joinGame(game, socketId, name) {
     id: randomId("u"),
     socketId,
     name: name?.trim() || `Player${taken + 1}`,
+    avatar: avatar || "🧙‍♂️",
     score: 0,
     eliminated: false,
     connected: true,
@@ -131,6 +133,7 @@ export function startRound(io, game) {
   const scoresSnapshot = game.players.map((p) => ({
     userId: p.id,
     name: p.name,
+    avatar: p.avatar,
     score: p.score,
     eliminated: p.eliminated,
     seatNo: p.seatNo,
@@ -180,6 +183,7 @@ function lockRound(io, game) {
   const picksArr = actives.map((p) => ({
     userId: p.id,
     name: p.name,
+    avatar: p.avatar,
     value: typeof game.picks[p.id] === "number" ? game.picks[p.id] : null,
   }));
 
@@ -217,6 +221,7 @@ function lockRound(io, game) {
     scores: game.players.map((p) => ({
       userId: p.id,
       name: p.name,
+      avatar: p.avatar,
       score: p.score,
       eliminated: p.eliminated,
       seatNo: p.seatNo,
@@ -252,10 +257,11 @@ function finishGame(io, game) {
   const winner = alive[0] || null;
 
   io.to(room(game)).emit("game_over", {
-    winner: winner ? { userId: winner.id, name: winner.name } : null,
+    winner: winner ? { userId: winner.id, name: winner.name, avatar: winner.avatar, score: winner.score } : null,
     finalScores: game.players.map((p) => ({
       userId: p.id,
       name: p.name,
+      avatar: p.avatar,
       score: p.score,
       eliminated: p.eliminated,
       seatNo: p.seatNo,

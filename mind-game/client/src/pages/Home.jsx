@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../lib/socket";
+import AvatarPicker from "../components/AvatarPicker";
 
 export default function Home({ setMe, setGame, setView }) {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+  const [avatar, setAvatar] = useState("🧙‍♂️");
 
   function createGame() {
-    socket.emit("create_game", { name });
+    socket.emit("create_game", { name, avatar });
   }
   function joinGame() {
-    socket.emit("join_game", { code, name });
+    socket.emit("join_game", { code, name, avatar });
   }
 
   useEffect(() => {
@@ -56,7 +58,10 @@ export default function Home({ setMe, setGame, setView }) {
         <p className="muted" style={{ fontSize: '0.9rem', marginBottom: 16 }}>
           Start a new game and invite your friends
         </p>
-        <div className="row">
+        
+        <AvatarPicker selected={avatar} onSelect={setAvatar} />
+        
+        <div className="row" style={{ marginTop: 16 }}>
           <input 
             placeholder="Enter your name" 
             value={name} 
@@ -79,7 +84,10 @@ export default function Home({ setMe, setGame, setView }) {
         <p className="muted" style={{ fontSize: '0.9rem', marginBottom: 16 }}>
           Enter a room code to join an existing game
         </p>
-        <div className="row">
+        
+        <AvatarPicker selected={avatar} onSelect={setAvatar} />
+        
+        <div className="row" style={{ marginTop: 16 }}>
           <input 
             placeholder="Your name" 
             value={name} 

@@ -9,7 +9,13 @@ export default function Reveal({ me, game, setGame, setView }) {
   const [waitingForHost, setWaitingForHost] = useState(true);
 
   useEffect(() => {
-    const onStartNext = () => setView("round");
+    const onStartNext = ({ roundNo, secondsLeft, scores }) => {
+      // Update round number and players when next round starts
+      if (Array.isArray(scores)) {
+        setGame((g) => ({ ...g, players: scores, currentRound: roundNo }));
+      }
+      setView("round");
+    };
     const onGameOver = (payload) => {
       setGame((g) => ({ ...g, gameOver: payload }));
       setView("gameover");

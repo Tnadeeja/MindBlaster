@@ -1,4 +1,5 @@
 import React from "react";
+import WinnerCelebration from "../components/WinnerCelebration";
 
 export default function GameOver({ game }) {
   const over = game.gameOver || {};
@@ -13,42 +14,22 @@ export default function GameOver({ game }) {
 
   return (
     <div className="card">
-      <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <div style={{ fontSize: '5rem', marginBottom: 16, animation: 'celebrate 1s ease-in-out' }}>
-          🏆
+      {/* Winner Celebration with Confetti */}
+      {over.winner && (
+        <div style={{ marginBottom: 32 }}>
+          <WinnerCelebration winner={over.winner} />
         </div>
-        <h1 style={{ fontSize: '3rem', marginBottom: 16 }}>Game Over!</h1>
-        {over.winner ? (
-          <div>
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2))',
-              border: '2px solid #f59e0b',
-              borderRadius: 20,
-              padding: '20px 32px',
-              display: 'inline-block',
-              animation: 'glow 2s ease-in-out infinite'
-            }}>
-              <div style={{ fontSize: '0.9rem', color: '#9ca3af', marginBottom: 4 }}>
-                👑 Champion
-              </div>
-              <div style={{ 
-                fontSize: '2.5rem', 
-                fontWeight: 700,
-                background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                {over.winner.name}
-              </div>
-            </div>
-          </div>
-        ) : (
+      )}
+
+      {!over.winner && (
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{ fontSize: '5rem', marginBottom: 16 }}>😔</div>
+          <h1 style={{ fontSize: '3rem', marginBottom: 16 }}>Game Over!</h1>
           <p className="muted" style={{ fontSize: '1.2rem' }}>
             No winner - all players eliminated or game aborted
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       <div style={{
         background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(147, 51, 234, 0.05))',

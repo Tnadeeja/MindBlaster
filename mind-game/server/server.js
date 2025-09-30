@@ -29,8 +29,8 @@ io.on("connection", (socket) => {
   let currentGame = null;
   let currentUser = null;
 
-  socket.on("create_game", ({ name }) => {
-    const game = createGame(io, socket.id, name);
+  socket.on("create_game", ({ name, avatar }) => {
+    const game = createGame(io, socket.id, name, avatar);
     currentGame = game;
     currentUser = game.players[0];
     joinSocketRoom(socket, game);
@@ -46,6 +46,7 @@ io.on("connection", (socket) => {
         score: p.score,
         eliminated: p.eliminated,
         seatNo: p.seatNo,
+        avatar: p.avatar,
       })),
     });
 
@@ -53,15 +54,15 @@ io.on("connection", (socket) => {
       gameId: game.id,
       code: game.code,
       hostUserId: game.hostUserId,
-      you: { userId: currentUser.id, name: currentUser.name, seatNo: currentUser.seatNo },
+      you: { userId: currentUser.id, name: currentUser.name, seatNo: currentUser.seatNo, avatar: currentUser.avatar },
     });
   });
 
-  socket.on("join_game", ({ code, name }) => {
+  socket.on("join_game", ({ code, name, avatar }) => {
     const game = findGameByCode(code);
     if (!game) return socket.emit("error_msg", { message: "Game not found" });
     try {
-      const p = joinGame(game, socket.id, name);
+      const p = joinGame(game, socket.id, name, avatar);
       currentGame = game;
       currentUser = p;
       joinSocketRoom(socket, game);
@@ -77,6 +78,7 @@ io.on("connection", (socket) => {
           score: pp.score,
           eliminated: pp.eliminated,
           seatNo: pp.seatNo,
+          avatar: pp.avatar,
         })),
       });
 
@@ -84,7 +86,7 @@ io.on("connection", (socket) => {
         gameId: game.id,
         code: game.code,
         hostUserId: game.hostUserId,
-        you: { userId: p.id, name: p.name, seatNo: p.seatNo },
+        you: { userId: p.id, name: p.name, seatNo: p.seatNo, avatar: p.avatar },
       });
 
       startIfFull(io, game);
