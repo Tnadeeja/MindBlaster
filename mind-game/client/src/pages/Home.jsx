@@ -38,22 +38,64 @@ export default function Home({ setMe, setGame, setView }) {
 
   return (
     <div className="card">
-      <h1>Mind Game</h1>
-      <p className="muted">Create a private room for 5 players, or join with a code.</p>
-
-      <h3>Create Game</h3>
-      <div className="row">
-        <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
-        <button onClick={createGame} disabled={!name.trim()}>Create</button>
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <h1 style={{ fontSize: '3.5rem', marginBottom: 8 }}>🧠 MindBlaster</h1>
+        <p className="muted" style={{ fontSize: '1.1rem' }}>
+          A strategic multiplayer game. Create a room for 5 players or join with a code.
+        </p>
       </div>
 
-      <hr style={{margin:"24px 0", borderColor:"#374151"}}/>
+      <div style={{ 
+        background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.05))',
+        border: '1px solid rgba(37, 99, 235, 0.2)',
+        borderRadius: 20,
+        padding: 24,
+        marginBottom: 24
+      }}>
+        <h3 style={{ marginTop: 0 }}>🎮 Create Game</h3>
+        <p className="muted" style={{ fontSize: '0.9rem', marginBottom: 16 }}>
+          Start a new game and invite your friends
+        </p>
+        <div className="row">
+          <input 
+            placeholder="Enter your name" 
+            value={name} 
+            onChange={e => setName(e.target.value)}
+            style={{ flex: 1, minWidth: 200 }}
+          />
+          <button onClick={createGame} disabled={!name.trim()}>
+            ✨ Create Room
+          </button>
+        </div>
+      </div>
 
-      <h3>Join Game</h3>
-      <div className="row">
-        <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
-        <input placeholder="Room code" value={code} onChange={e => setCode(e.target.value.toUpperCase())} style={{width:140}} />
-        <button onClick={joinGame} disabled={!name.trim() || code.length<6}>Join</button>
+      <div style={{ 
+        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(147, 51, 234, 0.05))',
+        border: '1px solid rgba(168, 85, 247, 0.2)',
+        borderRadius: 20,
+        padding: 24
+      }}>
+        <h3 style={{ marginTop: 0 }}>🚪 Join Game</h3>
+        <p className="muted" style={{ fontSize: '0.9rem', marginBottom: 16 }}>
+          Enter a room code to join an existing game
+        </p>
+        <div className="row">
+          <input 
+            placeholder="Your name" 
+            value={name} 
+            onChange={e => setName(e.target.value)}
+            style={{ flex: 1, minWidth: 180 }}
+          />
+          <input 
+            placeholder="ROOM CODE" 
+            value={code} 
+            onChange={e => setCode(e.target.value.toUpperCase())}
+            style={{ width: 160, textAlign: 'center', fontWeight: 600, letterSpacing: 2 }}
+          />
+          <button onClick={joinGame} disabled={!name.trim() || code.length<6}>
+            🎯 Join Room
+          </button>
+        </div>
       </div>
     </div>
   );
