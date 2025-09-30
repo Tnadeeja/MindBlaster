@@ -1,36 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { socket } from "../lib/socket";
 import NumberPicker from "../components/NumberPicker";
 import Scoreboard from "../components/Scoreboard";
 import Timer from "../components/Timer";
 
 export default function Round({ me, game, setGame, setView }) {
-  const [seconds, setSeconds] = React.useState(20);
-  const [value, setValue] = React.useState(50);
-  const [submitted, setSubmitted] = React.useState(false);
+  const [seconds, setSeconds] = useState(120);
+  const [value, setValue] = useState(50);
+  const [submitted, setSubmitted] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const onTick = ({ secondsLeft }) => setSeconds(secondsLeft);
-    const onResult = (payload) => {
-      // move to reveal view and pass payload via game state
-      setGame(g => ({ ...g, lastReveal: payload }));
-      setView("reveal");
-    };
-    const onStart = ({ roundNo, secondsLeft }) => {
+
+    const onStart = ({ roundNo, secondsLeft, scores }) => {
+      // Reset UI
       setSubmitted(false);
       setSeconds(secondsLeft);
+      // ⬅️ IMPORTANT: apply server-sent scores/players immediately
+      if (Array.isArray(scores)) {
+        setGame((g) => ({ ...g, players: scores }));
+      }
+    };
+
+    const onResult = (payload) => {
+      // Store reveal data and switch page
+      setGame((g) => ({ ...g, lastReveal: payload }));
+      setView("reveal");
     };
 
     socket.on("round_tick", onTick);
-    socket.on("round_result", onResult);
     socket.on("round_started", onStart);
+    socket.on("round_result", onResult);
 
     return () => {
       socket.off("round_tick", onTick);
-      socket.off("round_result", onResult);
       socket.off("round_started", onStart);
+      socket.off("round_result", onResult);
     };
-  }, []);
+  }, [setGame, setView]);
 
   function submit() {
     socket.emit("submit_pick", { userId: me.userId, value });

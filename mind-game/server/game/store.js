@@ -1,5 +1,4 @@
 // In-memory store of games
-// game = { id, code, status, players:[], roundNo, phase, picks:{}, timers:{}, config:{} }
 export const gamesById = new Map();
 export const gamesByCode = new Map();
 
@@ -9,7 +8,7 @@ export function addGame(game) {
 }
 
 export function getGameByCode(code) {
-  return gamesByCode.get(code);
+  return gamesByCode.get((code || "").toUpperCase());
 }
 
 export function removeGame(game) {

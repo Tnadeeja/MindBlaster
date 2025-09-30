@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { socket } from "../lib/socket";
 
 export default function Home({ setMe, setGame, setView }) {
@@ -12,15 +12,15 @@ export default function Home({ setMe, setGame, setView }) {
     socket.emit("join_game", { code, name });
   }
 
-  React.useEffect(() => {
-    const onCreated = ({ gameId, code, you }) => {
+  useEffect(() => {
+    const onCreated = ({ gameId, code, you, hostUserId }) => {
       setMe(you);
-      setGame({ id: gameId, code, players: [], status: "WAITING" });
+      setGame({ id: gameId, code, players: [], status: "WAITING", hostUserId });
       setView("lobby");
     };
-    const onJoined = ({ gameId, code, you }) => {
+    const onJoined = ({ gameId, code, you, hostUserId }) => {
       setMe(you);
-      setGame({ id: gameId, code, players: [], status: "WAITING" });
+      setGame({ id: gameId, code, players: [], status: "WAITING", hostUserId });
       setView("lobby");
     };
     const onError = ({ message }) => alert(message);
@@ -34,7 +34,7 @@ export default function Home({ setMe, setGame, setView }) {
       socket.off("joined", onJoined);
       socket.off("error_msg", onError);
     };
-  }, []);
+  }, [setGame, setMe, setView]);
 
   return (
     <div className="card">

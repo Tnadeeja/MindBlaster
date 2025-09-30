@@ -2,19 +2,25 @@ import { addGame, getGameByCode, removeGame } from "./store.js";
 import { randomCode, randomId } from "../utils/ids.js";
 
 /**
- * Game rules per your spec
- * - 5 players
- * - Each round: everyone picks 0..100 (hidden), average of active players, finalOut = avg*0.8
- * - Closest pick(s) win; others -1
- * - Eliminate at -10
- * - End when 4 eliminated => last remaining wins
+ * Rules implemented:
+ * - 5 players per game.
+ * - Round: each active player can submit 0..100 (hidden).
+ * - Average uses only submitted picks (timeouts are non-winners, not included in average).
+ * - finalOutput = average * 0.8
+ * - All closest picks are winners; everyone else gets -1.
+ * - Eliminate at -10.
+ * - End when only one active player remains.
+ * - Round timer = 120s; if all submit early, lock immediately.
+ * - After reveal, ONLY host can start next round.
  */
 
 export function createGame(io, hostSocketId, hostName) {
   const id = randomId("g");
   const code = randomCode(6);
   const game = {
-    id, code, status: "WAITING",
+    id,
+    code,
+    status: "WAITING",
     players: [], // {id, socketId, name, score, eliminated, connected, seatNo}
     roundNo: 0,
     phase: "lobby", // 'lobby' | 'collect' | 'reveal' | 'over'
@@ -23,10 +29,10 @@ export function createGame(io, hostSocketId, hostName) {
     countdown: 0,
     config: {
       capacity: 5,
-      collectSeconds: 20,
+      collectSeconds: 120,   // 2 minutes
       revealSeconds: 5,
-      startCountdown: 3
-    }
+      startCountdown: 3,
+    },
   };
 
   const host = {
@@ -36,16 +42,17 @@ export function createGame(io, hostSocketId, hostName) {
     score: 0,
     eliminated: false,
     connected: true,
-    seatNo: 1
+    seatNo: 1,
   };
   game.players.push(host);
+  game.hostUserId = host.id; // remember room creator
 
   addGame(game);
   return game;
 }
 
 export function findGameByCode(code) {
-  return getGameByCode(code?.toUpperCase?.() || code);
+  return getGameByCode(code);
 }
 
 export function joinGame(game, socketId, name) {
@@ -56,21 +63,13 @@ export function joinGame(game, socketId, name) {
   const p = {
     id: randomId("u"),
     socketId,
-    name: name?.trim() || `Player${taken+1}`,
+    name: name?.trim() || `Player${taken + 1}`,
     score: 0,
     eliminated: false,
     connected: true,
-    seatNo: taken + 1
+    seatNo: taken + 1,
   };
   game.players.push(p);
-  return p;
-}
-
-export function reconnect(game, playerId, socketId) {
-  const p = game.players.find(x => x.id === playerId);
-  if (!p) return null;
-  p.socketId = socketId;
-  p.connected = true;
   return p;
 }
 
@@ -82,6 +81,10 @@ export function startIfFull(io, game) {
   }
 }
 
+function room(game) {
+  return `game:${game.id}`;
+}
+
 function clearTimers(game) {
   for (const k of Object.keys(game.timers)) {
     if (game.timers[k]) {
@@ -90,6 +93,10 @@ function clearTimers(game) {
       game.timers[k] = null;
     }
   }
+}
+
+function activePlayers(game) {
+  return game.players.filter((p) => !p.eliminated);
 }
 
 function startCountdown(io, game) {
@@ -109,14 +116,6 @@ function startCountdown(io, game) {
   }, 1000);
 }
 
-function activePlayers(game) {
-  return game.players.filter(p => !p.eliminated);
-}
-
-function room(game) {
-  return `game:${game.id}`;
-}
-
 export function startRound(io, game) {
   clearTimers(game);
   game.roundNo += 1;
@@ -127,15 +126,29 @@ export function startRound(io, game) {
   if (N <= 1) return finishGame(io, game);
 
   let secondsLeft = game.config.collectSeconds;
-  io.to(room(game)).emit("round_started", { roundNo: game.roundNo, secondsLeft });
 
-  // ticker
+  // Send current players + scores so everyone has the same scoreboard when round begins
+  const scoresSnapshot = game.players.map((p) => ({
+    userId: p.id,
+    name: p.name,
+    score: p.score,
+    eliminated: p.eliminated,
+    seatNo: p.seatNo,
+  }));
+
+  io.to(room(game)).emit("round_started", {
+    roundNo: game.roundNo,
+    secondsLeft,
+    scores: scoresSnapshot, // ⬅️ include full list (fixes "fifth player missing" + "zeros during round")
+  });
+
+  // tick down
   game.timers.ticker = setInterval(() => {
     secondsLeft -= 1;
     io.to(room(game)).emit("round_tick", { secondsLeft });
   }, 1000);
 
-  // main timer
+  // hard stop at collectSeconds
   game.timers.main = setTimeout(() => {
     lockRound(io, game);
   }, game.config.collectSeconds * 1000);
@@ -143,12 +156,14 @@ export function startRound(io, game) {
 
 export function submitPick(io, game, userId, value) {
   if (game.phase !== "collect") return;
-  const player = game.players.find(p => p.id === userId && !p.eliminated);
+  const player = game.players.find((p) => p.id === userId && !p.eliminated);
   if (!player) return;
   if (typeof game.picks[userId] === "number") return; // already submitted
   if (!Number.isInteger(value) || value < 0 || value > 100) return;
+
   game.picks[userId] = value;
 
+  // If all active players have submitted, lock immediately
   const needed = activePlayers(game).length;
   const have = Object.keys(game.picks).length;
   if (have >= needed) {
@@ -162,71 +177,71 @@ function lockRound(io, game) {
   game.phase = "reveal";
 
   const actives = activePlayers(game);
-  // anyone missing a pick gets no pick => they are non-winners (penalized)
-  const picksArr = actives.map(p => ({
+  const picksArr = actives.map((p) => ({
     userId: p.id,
     name: p.name,
-    value: typeof game.picks[p.id] === "number" ? game.picks[p.id] : null
+    value: typeof game.picks[p.id] === "number" ? game.picks[p.id] : null,
   }));
 
-  const validPicks = picksArr.filter(x => typeof x.value === "number");
-  // Compute total/avg/finalOutput using only players who submitted?
-  // Your rule: average uses ALL ACTIVE PLAYERS (even if someone timed out),
-  // but they have "no pick". For average we need numbers; we’ll treat missing as 0? No.
-  // We must average over N active players using their chosen numbers only if they submitted?
-  // Your spec says: they missed pick -> non-winner, but average is over active players' picks.
-  // If they didn’t submit, there is no number to include. We’ll treat missing pick as not counted for avg?
-  // To keep faithful: average uses ONLY active players who submitted.
-  // If you prefer to include them as 0, change here. I'll stick to submitted-only.
+  const validPicks = picksArr.filter((x) => typeof x.value === "number");
   const N = validPicks.length;
   const total = validPicks.reduce((s, x) => s + x.value, 0);
   const result = N > 0 ? total / N : 0;
   const finalOutput = result * 0.8;
 
-  // determine winners among those who submitted
   let minDist = Infinity;
   for (const x of validPicks) {
     const d = Math.abs(x.value - finalOutput);
     if (d < minDist) minDist = d;
   }
-  const winners = validPicks.filter(x => Math.abs(x.value - finalOutput) === minDist).map(x => x.userId);
+  const winners = validPicks
+    .filter((x) => Math.abs(x.value - finalOutput) === minDist)
+    .map((x) => x.userId);
 
-  // scoring
+  // scoring (timeouts are non-winners too)
   for (const p of actives) {
     const isWinner = winners.includes(p.id);
     if (!isWinner) {
-      p.score -= 1; // −1 for non-winners and for non-submitters
-      if (p.score <= -10) {
-        p.eliminated = true;
-      }
+      p.score -= 1;
+      if (p.score <= -10) p.eliminated = true;
     }
   }
 
-  // prepare reveal payload (picks are shown now)
   const reveal = {
     roundNo: game.roundNo,
-    picks: picksArr, // includes nulls for non-submitters
+    picks: picksArr, // reveal picks (null = missed)
     total,
     average: result,
     finalOutput,
     winners,
-    scores: game.players.map(p => ({
-      userId: p.id, name: p.name, score: p.score, eliminated: p.eliminated, seatNo: p.seatNo
-    }))
+    scores: game.players.map((p) => ({
+      userId: p.id,
+      name: p.name,
+      score: p.score,
+      eliminated: p.eliminated,
+      seatNo: p.seatNo,
+    })),
   };
 
   io.to(room(game)).emit("round_result", reveal);
 
-  // check end condition
+  // end condition
   const still = activePlayers(game);
   if (still.length <= 1) {
     return finishGame(io, game);
   }
 
-  // next round after revealSeconds
-  game.timers.main = setTimeout(() => {
-    startRound(io, game);
-  }, game.config.revealSeconds * 1000);
+  // Wait for HOST to start next round
+  io.to(room(game)).emit("await_next_round", { hostUserId: game.hostUserId });
+}
+
+export function startNextRoundByHost(io, game, requesterUserId) {
+  if (!game) return;
+  if (game.status !== "RUNNING" || game.phase !== "reveal") return;
+  if (requesterUserId !== game.hostUserId) return; // only host can proceed
+  const still = activePlayers(game);
+  if (still.length <= 1) return finishGame(io, game);
+  startRound(io, game);
 }
 
 function finishGame(io, game) {
@@ -235,16 +250,22 @@ function finishGame(io, game) {
   game.status = "FINISHED";
   const alive = activePlayers(game);
   const winner = alive[0] || null;
+
   io.to(room(game)).emit("game_over", {
     winner: winner ? { userId: winner.id, name: winner.name } : null,
-    finalScores: game.players.map(p => ({
-      userId: p.id, name: p.name, score: p.score, eliminated: p.eliminated, seatNo: p.seatNo
-    }))
+    finalScores: game.players.map((p) => ({
+      userId: p.id,
+      name: p.name,
+      score: p.score,
+      eliminated: p.eliminated,
+      seatNo: p.seatNo,
+    })),
   });
 
-  // Optional: clean up the room after a minute
   setTimeout(() => {
-    try { io.socketsLeave(room(game)); } catch {}
+    try {
+      io.socketsLeave(room(game));
+    } catch {}
     removeGame(game);
   }, 60 * 1000);
 }

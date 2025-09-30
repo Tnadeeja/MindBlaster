@@ -13,7 +13,7 @@ export default function GameOver({ game }) {
 
       <h3>Final Standings</h3>
       <div className="scores">
-        {(over.finalScores || []).map(p => (
+        {(over.finalScores || []).map((p) => (
           <div key={p.userId} className="pill">
             <div><strong>{p.name}</strong></div>
             <div>Score: {p.score}</div>

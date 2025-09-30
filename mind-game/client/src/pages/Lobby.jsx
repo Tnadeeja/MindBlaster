@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { socket } from "../lib/socket";
 import Scoreboard from "../components/Scoreboard";
 
 export default function Lobby({ me, game, setGame, setView }) {
-  const [countdown, setCountdown] = React.useState(null);
+  const [countdown, setCountdown] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const onLobby = (payload) => {
-      setGame(g => ({ ...g, ...payload, players: payload.players, status: payload.status }));
+      setGame((g) => ({
+        ...g,
+        ...payload,
+        players: payload.players,
+        status: payload.status,
+        hostUserId: payload.hostUserId,
+      }));
     };
     const onStarting = ({ countdown }) => {
       setCountdown(countdown);
       if (countdown <= 0) setCountdown(null);
     };
-    const onRoundStart = ({ roundNo, secondsLeft }) => {
+    const onRoundStart = () => {
       setView("round");
     };
 
@@ -26,7 +32,7 @@ export default function Lobby({ me, game, setGame, setView }) {
       socket.off("game_starting", onStarting);
       socket.off("round_started", onRoundStart);
     };
-  }, []);
+  }, [setGame, setView]);
 
   return (
     <div className="card">

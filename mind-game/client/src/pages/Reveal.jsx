@@ -1,24 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Scoreboard from "../components/Scoreboard";
 import { socket } from "../lib/socket";
 
-export default function Reveal({ game, setGame, setView }) {
+export default function Reveal({ me, game, setGame, setView }) {
   const reveal = game.lastReveal || {};
   const winners = new Set(reveal.winners || []);
+  const isHost = game?.hostUserId === me?.userId;
+  const [waitingForHost, setWaitingForHost] = useState(true);
 
-  React.useEffect(() => {
-    const onStartNext = ({ roundNo, secondsLeft }) => setView("round");
+  useEffect(() => {
+    const onStartNext = () => setView("round");
     const onGameOver = (payload) => {
-      setGame(g => ({ ...g, gameOver: payload }));
+      setGame((g) => ({ ...g, gameOver: payload }));
       setView("gameover");
     };
+    const onAwait = () => setWaitingForHost(true);
+
     socket.on("round_started", onStartNext);
     socket.on("game_over", onGameOver);
+    socket.on("await_next_round", onAwait);
+
     return () => {
       socket.off("round_started", onStartNext);
       socket.off("game_over", onGameOver);
+      socket.off("await_next_round", onAwait);
     };
-  }, []);
+  }, [setGame, setView]);
+
+  function nextRound() {
+    setWaitingForHost(false);
+    socket.emit("next_round", { userId: me.userId });
+  }
 
   return (
     <div className="card">
@@ -26,7 +38,7 @@ export default function Reveal({ game, setGame, setView }) {
       <p className="muted">Here are the picks and results.</p>
 
       <div className="scores" style={{marginTop:10}}>
-        {(reveal.picks || []).map(p => (
+        {(reveal.picks || []).map((p) => (
           <div key={p.userId} className={`pill ${winners.has(p.userId) ? "winner" : ""}`}>
             <div><strong>{p.name}</strong></div>
             <div>Pick: {p.value === null ? <em className="danger">missed</em> : p.value}</div>
@@ -43,7 +55,15 @@ export default function Reveal({ game, setGame, setView }) {
       <h3 style={{marginTop:20}}>Scores</h3>
       <Scoreboard players={reveal.scores || []} />
 
-      <p className="muted" style={{marginTop:10}}>Next round will start automatically…</p>
+      {isHost ? (
+        <div className="row" style={{marginTop:16}}>
+          <button onClick={nextRound}>Start Next Round</button>
+        </div>
+      ) : (
+        <p className="muted" style={{marginTop:16}}>
+          Waiting for host to start the next round…
+        </p>
+      )}
     </div>
   );
 }
