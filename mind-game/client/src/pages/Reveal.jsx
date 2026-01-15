@@ -61,7 +61,7 @@ export default function Reveal({ me, game, setGame, setView }) {
     <div className="card">
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <h2 style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          <Drama size={32} color="#60a5fa" />
+          <Drama size={32} color="#ff0000" />
           Round Results
         </h2>
         <p className="muted">
@@ -70,14 +70,14 @@ export default function Reveal({ me, game, setGame, setView }) {
       </div>
 
       <div style={{
-        background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.05))',
-        border: '1px solid rgba(37, 99, 235, 0.2)',
+        background: '#0a0000',
+        border: '1px solid #4a0000',
         borderRadius: 20,
         padding: 20,
         marginBottom: 20
       }}>
         <h3 style={{ marginTop: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Target size={24} color="#60a5fa" />
+          <Target size={24} color="#ff0000" />
           Player Picks
         </h3>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'nowrap', overflowX: 'auto' }}>
@@ -108,7 +108,7 @@ export default function Reveal({ me, game, setGame, setView }) {
                   <em className="danger">⏰ Missed</em>
                 ) : (
                   <span style={{
-                    background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+                    background: 'linear-gradient(135deg, #ff0000, #8b0000)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text'
@@ -123,14 +123,14 @@ export default function Reveal({ me, game, setGame, setView }) {
       </div>
 
       <div style={{
-        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(147, 51, 234, 0.05))',
-        border: '1px solid rgba(168, 85, 247, 0.2)',
+        background: '#0a0000',
+        border: '1px solid #4a0000',
         borderRadius: 20,
         padding: 20,
         marginBottom: 20
       }}>
         <h3 style={{ marginTop: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <BarChart3 size={24} color="#a78bfa" />
+          <BarChart3 size={24} color="#8b008b" />
           Calculations
         </h3>
         <div style={{ 
@@ -146,12 +146,12 @@ export default function Reveal({ me, game, setGame, setView }) {
             <div style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: 4 }}>Average</div>
             <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>{(reveal.average ?? 0).toFixed(2)}</div>
           </div>
-          <div className="pill" style={{ textAlign: 'center', border: '2px solid #2563eb' }}>
+          <div className="pill" style={{ textAlign: 'center', border: '2px solid #8b0000' }}>
             <div style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: 4 }}>Target (×0.8)</div>
             <div style={{ 
               fontSize: '1.8rem', 
               fontWeight: 700,
-              background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+              background: 'linear-gradient(135deg, #ff0000, #8b0000)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
@@ -163,14 +163,14 @@ export default function Reveal({ me, game, setGame, setView }) {
       </div>
 
       <div style={{
-        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05))',
-        border: '1px solid rgba(16, 185, 129, 0.2)',
+        background: '#0a0000',
+        border: '1px solid #4a0000',
         borderRadius: 20,
         padding: 20,
         marginBottom: 20
       }}>
         <h3 style={{ marginTop: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Trophy size={24} color="#10b981" />
+          <Trophy size={24} color="#8b0000" />
           Leaderboard
         </h3>
         <Scoreboard players={reveal.scores || []} />
@@ -183,8 +183,8 @@ export default function Reveal({ me, game, setGame, setView }) {
             width: '100%',
             padding: '16px',
             fontSize: '1.2rem',
-            background: 'linear-gradient(135deg, #10b981, #059669)',
-            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+            background: 'linear-gradient(135deg, #8b0000, #660000)',
+            boxShadow: '0 4px 12px rgba(139, 0, 0, 0.4)',
             display: 'flex',
             alignItems: 'center',
             gap: 8,

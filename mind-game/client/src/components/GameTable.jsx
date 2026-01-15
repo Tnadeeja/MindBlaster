@@ -13,13 +13,13 @@ export default function GameTable({ players, currentRound }) {
 
   // Calculate danger color based on score (gradually turns red)
   const getDangerColor = (score) => {
-    if (score >= 0) return { bg: "rgba(37, 99, 235, 0.3)", border: "#2563eb" };
+    if (score >= 0) return { bg: "rgba(139, 0, 0, 0.3)", border: "#8b0000" };
     
     const level = Math.abs(score);
     const intensity = Math.min(level / 10, 1); // 0 to 1
     
-    // Interpolate from blue to red
-    const r = Math.floor(37 + (239 - 37) * intensity);
+    // Interpolate from dark red to blood red
+    const r = Math.floor(139 + (239 - 139) * intensity);
     const g = Math.floor(99 - 99 * intensity);
     const b = Math.floor(235 - 167 * intensity);
     
@@ -42,11 +42,11 @@ export default function GameTable({ players, currentRound }) {
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 10,
-          background: "linear-gradient(135deg, rgba(37, 99, 235, 0.3), rgba(29, 78, 216, 0.3))",
-          border: "2px solid #2563eb",
+          background: "linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(102, 0, 0, 0.3))",
+          border: "2px solid #8b0000",
           borderRadius: 12,
           padding: "8px 24px",
-          boxShadow: "0 4px 16px rgba(37, 99, 235, 0.5)",
+          boxShadow: "0 4px 16px rgba(139, 0, 0, 0.5)",
           animation: "slideDown 0.5s ease-out",
         }}
       >

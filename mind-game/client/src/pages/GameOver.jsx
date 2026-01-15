@@ -45,13 +45,13 @@ export default function GameOver({ game }) {
       )}
 
       <div style={{
-        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(147, 51, 234, 0.05))',
-        border: '1px solid rgba(168, 85, 247, 0.2)',
+        background: '#0a0000',
+        border: '1px solid #4a0000',
         borderRadius: 20,
         padding: 24
       }}>
         <h3 style={{ marginTop: 0, marginBottom: 20, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          <Trophy size={28} color="#fbbf24" />
+          <Trophy size={28} color="#ff0000" />
           Final Standings
         </h3>
         
@@ -66,10 +66,10 @@ export default function GameOver({ game }) {
                   ? 'linear-gradient(135deg, rgba(203, 213, 225, 0.15), rgba(148, 163, 184, 0.1))'
                   : index === 2
                   ? 'linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(180, 83, 9, 0.1))'
-                  : 'linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(31, 41, 55, 0.8))',
+                  : '#0a0000',
                 border: index < 3 
                   ? `2px solid ${index === 0 ? '#f59e0b' : index === 1 ? '#94a3b8' : '#cd7f32'}`
-                  : '1px solid rgba(255, 255, 255, 0.1)',
+                  : '1px solid #4a0000',
                 borderRadius: 16,
                 padding: 20,
                 display: 'flex',

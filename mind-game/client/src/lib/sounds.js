@@ -43,87 +43,96 @@ class SoundManager {
     });
   }
 
-  // Specific game sounds
+  // Horror sound effects
   join() {
-    // Cheerful ascending tone
+    // Creepy door creak sound
     this.playSequence([
-      { freq: 523.25, duration: 0.1, type: 'sine', volume: 0.2 },
-      { freq: 659.25, duration: 0.15, type: 'sine', volume: 0.25 }
-    ], 0.1);
+      { freq: 80, duration: 0.3, type: 'sawtooth', volume: 0.15 },
+      { freq: 60, duration: 0.4, type: 'sawtooth', volume: 0.2 },
+      { freq: 40, duration: 0.2, type: 'sawtooth', volume: 0.1 }
+    ], 0.2);
   }
 
   gameStart() {
-    // Exciting fanfare
+    // Horror heartbeat start
     this.playSequence([
-      { freq: 392, duration: 0.15, type: 'square', volume: 0.2 },
-      { freq: 523.25, duration: 0.15, type: 'square', volume: 0.2 },
-      { freq: 659.25, duration: 0.25, type: 'square', volume: 0.25 }
-    ], 0.12);
+      { freq: 40, duration: 0.1, type: 'sine', volume: 0.3 },
+      { freq: 60, duration: 0.1, type: 'sine', volume: 0.3 },
+      { freq: 40, duration: 0.1, type: 'sine', volume: 0.3 },
+      { freq: 80, duration: 0.3, type: 'square', volume: 0.2 }
+    ], 0.15);
   }
 
   submit() {
-    // Confirmation beep
-    this.playTone(880, 0.1, 'sine', 0.2);
+    // Blood drop sound
+    this.playTone(150, 0.15, 'sine', 0.25);
   }
 
   roundStart() {
-    // Alert tone
+    // Scary whisper wind
     this.playSequence([
-      { freq: 784, duration: 0.1, type: 'triangle', volume: 0.2 },
-      { freq: 880, duration: 0.15, type: 'triangle', volume: 0.25 }
-    ], 0.08);
-  }
-
-  timerUrgent() {
-    // Urgent beep
-    this.playTone(1046.5, 0.08, 'square', 0.15);
-  }
-
-  reveal() {
-    // Dramatic reveal
-    this.playSequence([
-      { freq: 523.25, duration: 0.1, type: 'sine', volume: 0.2 },
-      { freq: 659.25, duration: 0.1, type: 'sine', volume: 0.2 },
-      { freq: 783.99, duration: 0.2, type: 'sine', volume: 0.25 }
+      { freq: 100, duration: 0.2, type: 'sawtooth', volume: 0.15 },
+      { freq: 120, duration: 0.15, type: 'sawtooth', volume: 0.2 },
+      { freq: 80, duration: 0.25, type: 'sawtooth', volume: 0.15 }
     ], 0.1);
   }
 
-  win() {
-    // Victory fanfare
+  timerUrgent() {
+    // Heartbeat urgent
+    this.playTone(50, 0.1, 'square', 0.3);
+  }
+
+  reveal() {
+    // Ghostly moan reveal
     this.playSequence([
-      { freq: 523.25, duration: 0.15, type: 'square', volume: 0.2 },
-      { freq: 659.25, duration: 0.15, type: 'square', volume: 0.2 },
-      { freq: 783.99, duration: 0.15, type: 'square', volume: 0.2 },
-      { freq: 1046.5, duration: 0.3, type: 'square', volume: 0.25 }
+      { freq: 200, duration: 0.3, type: 'sawtooth', volume: 0.2 },
+      { freq: 150, duration: 0.2, type: 'sawtooth', volume: 0.25 },
+      { freq: 100, duration: 0.4, type: 'sawtooth', volume: 0.15 }
+    ], 0.15);
+  }
+
+  win() {
+    // Sinister victory laugh
+    this.playSequence([
+      { freq: 300, duration: 0.1, type: 'square', volume: 0.2 },
+      { freq: 400, duration: 0.1, type: 'square', volume: 0.25 },
+      { freq: 500, duration: 0.1, type: 'square', volume: 0.3 },
+      { freq: 200, duration: 0.3, type: 'sawtooth', volume: 0.2 }
     ], 0.12);
   }
 
   eliminate() {
-    // Descending dramatic tone
+    // Death scream
     this.playSequence([
-      { freq: 523.25, duration: 0.15, type: 'sawtooth', volume: 0.25 },
-      { freq: 392, duration: 0.15, type: 'sawtooth', volume: 0.25 },
-      { freq: 261.63, duration: 0.3, type: 'sawtooth', volume: 0.2 }
+      { freq: 800, duration: 0.2, type: 'sawtooth', volume: 0.3 },
+      { freq: 600, duration: 0.2, type: 'sawtooth', volume: 0.25 },
+      { freq: 400, duration: 0.3, type: 'sawtooth', volume: 0.2 },
+      { freq: 100, duration: 0.4, type: 'sine', volume: 0.15 }
     ], 0.1);
   }
 
   gameOver() {
-    // Game over sequence
+    // Funeral dirge
     this.playSequence([
-      { freq: 392, duration: 0.2, type: 'triangle', volume: 0.2 },
-      { freq: 349.23, duration: 0.2, type: 'triangle', volume: 0.2 },
-      { freq: 293.66, duration: 0.4, type: 'triangle', volume: 0.25 }
-    ], 0.15);
+      { freq: 100, duration: 0.3, type: 'triangle', volume: 0.2 },
+      { freq: 80, duration: 0.3, type: 'triangle', volume: 0.2 },
+      { freq: 60, duration: 0.5, type: 'triangle', volume: 0.25 },
+      { freq: 40, duration: 0.4, type: 'sine', volume: 0.15 }
+    ], 0.2);
   }
 
   countdown() {
-    // Quick tick
-    this.playTone(1174.66, 0.05, 'sine', 0.15);
+    // Ticking clock horror
+    this.playTone(120, 0.08, 'square', 0.2);
   }
 
   error() {
-    // Error buzz
-    this.playTone(200, 0.2, 'sawtooth', 0.2);
+    // Static horror buzz
+    this.playSequence([
+      { freq: 100, duration: 0.1, type: 'sawtooth', volume: 0.25 },
+      { freq: 150, duration: 0.1, type: 'sawtooth', volume: 0.3 },
+      { freq: 80, duration: 0.2, type: 'sawtooth', volume: 0.2 }
+    ], 0.05);
   }
 
   toggle() {

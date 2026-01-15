@@ -5,8 +5,8 @@ export default function NumberPicker({ value, setValue, disabled }) {
     <div style={{ flex: 1, minWidth: 280 }}>
       <div 
         style={{
-          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.1))',
-          border: '1px solid rgba(37, 99, 235, 0.3)',
+          background: '#0a0000',
+          border: '1px solid #4a0000',
           borderRadius: 16,
           padding: 20,
           opacity: disabled ? 0.6 : 1,
@@ -18,7 +18,7 @@ export default function NumberPicker({ value, setValue, disabled }) {
           <span style={{ 
             fontSize: '2rem', 
             fontWeight: 700, 
-            background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+            background: 'linear-gradient(135deg, #ff0000, #8b0000)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'
@@ -38,7 +38,7 @@ export default function NumberPicker({ value, setValue, disabled }) {
             width: '100%',
             height: 8,
             borderRadius: 4,
-            background: `linear-gradient(to right, #2563eb 0%, #2563eb ${value}%, #374151 ${value}%, #374151 100%)`,
+            background: `linear-gradient(to right, #8b0000 0%, #8b0000 ${value}%, #4a0000 ${value}%, #4a0000 100%)`,
             outline: 'none',
             cursor: disabled ? 'not-allowed' : 'pointer',
             WebkitAppearance: 'none',
@@ -60,28 +60,28 @@ export default function NumberPicker({ value, setValue, disabled }) {
           width: 24px;
           height: 24px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          background: linear-gradient(135deg, #8b0000, #660000);
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.6);
+          box-shadow: 0 2px 8px rgba(139, 0, 0, 0.6);
           transition: all 0.2s ease;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
           transform: scale(1.2);
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.8);
+          box-shadow: 0 4px 12px rgba(139, 0, 0, 0.8);
         }
         input[type="range"]::-moz-range-thumb {
           width: 24px;
           height: 24px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          background: linear-gradient(135deg, #8b0000, #660000);
           cursor: pointer;
           border: none;
-          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.6);
+          box-shadow: 0 2px 8px rgba(139, 0, 0, 0.6);
           transition: all 0.2s ease;
         }
         input[type="range"]::-moz-range-thumb:hover {
           transform: scale(1.2);
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.8);
+          box-shadow: 0 4px 12px rgba(139, 0, 0, 0.8);
         }
       `}</style>
     </div>

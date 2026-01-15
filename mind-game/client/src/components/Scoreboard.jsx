@@ -24,7 +24,7 @@ export default function Scoreboard({ players }) {
               borderRadius: '50%',
               background: p.eliminated 
                 ? 'linear-gradient(135deg, #6b7280, #4b5563)'
-                : 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                : 'linear-gradient(135deg, #8b0000, #660000)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

@@ -48,13 +48,13 @@ export default function Lobby({ me, game, setGame, setView }) {
     <div className="card">
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <h2 style={{ marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          <Gamepad2 size={32} color="#60a5fa" />
+          <Gamepad2 size={32} color="#ff0000" />
           Game Lobby
         </h2>
         <div style={{ 
           display: 'inline-block',
-          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(29, 78, 216, 0.2))',
-          border: '2px solid #2563eb',
+          background: '#0a0000',
+          border: '2px solid #8b0000',
           borderRadius: 16,
           padding: '12px 32px',
           marginBottom: 8
@@ -69,20 +69,20 @@ export default function Lobby({ me, game, setGame, setView }) {
       </div>
 
       <div style={{
-        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(147, 51, 234, 0.05))',
-        border: '1px solid rgba(168, 85, 247, 0.2)',
+        background: '#0a0000',
+        border: '1px solid #4a0000',
         borderRadius: 20,
         padding: 20,
         marginBottom: 20
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Users size={24} color="#a78bfa" />
+            <Users size={24} color="#8b008b" />
             Players
           </h3>
           <div style={{
-            background: playerCount === 5 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(37, 99, 235, 0.2)',
-            border: `1px solid ${playerCount === 5 ? '#10b981' : '#2563eb'}`,
+            background: playerCount === 5 ? '#0a0000' : '#0a0000',
+            border: `1px solid ${playerCount === 5 ? '#8b0000' : '#4a0000'}`,
             borderRadius: 12,
             padding: '6px 16px',
             fontWeight: 700,

@@ -1,18 +1,18 @@
 import React from "react";
 
 const avatars = [
-  { id: 1, emoji: "🧙‍♂️", name: "Wizard" },
-  { id: 2, emoji: "🦸‍♀️", name: "Hero" },
-  { id: 3, emoji: "🤖", name: "Robot" },
-  { id: 4, emoji: "👽", name: "Alien" },
-  { id: 5, emoji: "🐉", name: "Dragon" },
-  { id: 6, emoji: "🦊", name: "Fox" },
-  { id: 7, emoji: "🐼", name: "Panda" },
-  { id: 8, emoji: "🦁", name: "Lion" },
-  { id: 9, emoji: "🐺", name: "Wolf" },
-  { id: 10, emoji: "🦉", name: "Owl" },
-  { id: 11, emoji: "🎭", name: "Mask" },
-  { id: 12, emoji: "👾", name: "Invader" },
+  { id: 1, emoji: "👻", name: "Ghost" },
+  { id: 2, emoji: "💀", name: "Skull" },
+  { id: 3, emoji: "🧛", name: "Vampire" },
+  { id: 4, emoji: "🧟", name: "Zombie" },
+  { id: 5, emoji: "👹", name: "Demon" },
+  { id: 6, emoji: "🎃", name: "Pumpkin" },
+  { id: 7, emoji: "🕷️", name: "Spider" },
+  { id: 8, emoji: "🕸️", name: "Web" },
+  { id: 9, emoji: "⚰️", name: "Coffin" },
+  { id: 10, emoji: "🦇", name: "Bat" },
+  { id: 11, emoji: "🩸", name: "Blood" },
+  { id: 12, emoji: "⚡", name: "Storm" },
 ];
 
 export default function AvatarPicker({ selected, onSelect }) {
@@ -24,7 +24,7 @@ export default function AvatarPicker({ selected, onSelect }) {
         marginBottom: 12,
         fontWeight: 600 
       }}>
-        Choose Your Avatar
+        Choose Your Horror Avatar
       </div>
       <div style={{ 
         display: 'grid', 
@@ -40,11 +40,11 @@ export default function AvatarPicker({ selected, onSelect }) {
               height: 50,
               borderRadius: 12,
               background: selected === avatar.emoji
-                ? 'linear-gradient(135deg, #2563eb, #1d4ed8)'
-                : 'rgba(17, 24, 39, 0.8)',
+                ? 'linear-gradient(135deg, #8b0000, #660000)'
+                : '#0a0000',
               border: selected === avatar.emoji
-                ? '2px solid #60a5fa'
-                : '1px solid rgba(255, 255, 255, 0.1)',
+                ? '2px solid #ff0000'
+                : '1px solid rgba(139, 0, 0, 0.2)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -52,7 +52,7 @@ export default function AvatarPicker({ selected, onSelect }) {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               boxShadow: selected === avatar.emoji
-                ? '0 0 20px rgba(37, 99, 235, 0.5)'
+                ? '0 0 20px rgba(139, 0, 0, 0.6)'
                 : 'none'
             }}
             onMouseEnter={(e) => {
