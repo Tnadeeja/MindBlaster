@@ -62,7 +62,7 @@ export default function Round({ me, game, setGame, setView }) {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 1200 }}>
+    <div className="card" style={{ maxWidth: '95vw', margin: '20px auto' }}>
       {/* Game Table View */}
       <GameTable players={game.players || []} currentRound={game.currentRound} />
 
@@ -79,24 +79,27 @@ export default function Round({ me, game, setGame, setView }) {
           <Timer seconds={seconds} />
           {submitted && !isEliminated && (
             <div style={{
-              background: '#0a0000',
-              border: '2px solid #8b0000',
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))',
+              border: '2px solid #10b981',
               borderRadius: 16,
               padding: '12px 24px',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
               fontSize: '1.1rem',
-              fontWeight: 600
+              fontWeight: 600,
+              textAlign: 'center',
+              flex: '1',
+              minWidth: 0
             }}>
               <CheckCircle size={20} />
-              Submitted!
+              <span style={{ fontSize: '0.9rem' }}>Submitted!</span>
             </div>
           )}
           {isEliminated && (
             <div style={{
-              background: '#0a0000',
-              border: '2px solid #ff0000',
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2))',
+              border: '2px solid #ef4444',
               borderRadius: 16,
               padding: '12px 24px',
               display: 'flex',
@@ -105,22 +108,32 @@ export default function Round({ me, game, setGame, setView }) {
               fontSize: '1.3rem',
               fontWeight: 700,
               animation: 'pulse 2s ease-in-out infinite',
-              textShadow: '0 0 10px rgba(239, 68, 68, 0.8)'
+              textShadow: '0 0 10px rgba(239, 68, 68, 0.8)',
+              textAlign: 'center',
+              flex: '1',
+              minWidth: 0
             }}>
               <Skull size={24} />
-              You are Eliminated!
+              <span style={{ fontSize: '1rem' }}>You are Eliminated!</span>
             </div>
           )}
         </div>
 
         {!isEliminated && (
           <div style={{
-            background: '#0a0000',
-            border: '1px solid #4a0000',
+            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.05))',
+            border: '1px solid rgba(37, 99, 235, 0.2)',
             borderRadius: 20,
-            padding: 24
+            padding: 24,
+            textAlign: 'center'
           }}>
-            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: 16, 
+              alignItems: 'center', 
+              flexWrap: 'wrap', 
+              justifyContent: 'center'
+            }}>
               <NumberPicker value={value} setValue={setValue} disabled={submitted} />
               <button 
                 onClick={submit} 
@@ -132,18 +145,19 @@ export default function Round({ me, game, setGame, setView }) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  flex: '1'
                 }}
               >
                 {submitted ? (
                   <>
                     <CheckCircle size={20} />
-                    Locked In
+                    <span style={{ fontSize: '0.9rem' }}>Locked In</span>
                   </>
                 ) : (
                   <>
                     <Target size={20} />
-                    Submit
+                    <span style={{ fontSize: '0.9rem' }}>Submit</span>
                   </>
                 )}
               </button>
@@ -153,14 +167,15 @@ export default function Round({ me, game, setGame, setView }) {
         
         {isEliminated && (
           <div style={{
-            background: '#0a0000',
-            border: '1px solid #333333',
+            background: 'linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(75, 85, 99, 0.05))',
+            border: '1px solid rgba(107, 114, 128, 0.3)',
             borderRadius: 20,
             padding: 32,
             textAlign: 'center'
           }}>
             <div style={{ fontSize: '1.2rem', color: '#9ca3af' }}>
-              You cannot submit picks anymore. Wait for the round to end.
+              <span style={{ fontSize: '1rem', display: 'block', marginBottom: 8 }}>You cannot submit picks anymore.</span>
+              <span style={{ fontSize: '0.9rem', display: 'block' }}>Wait for the round to end.</span>
             </div>
           </div>
         )}

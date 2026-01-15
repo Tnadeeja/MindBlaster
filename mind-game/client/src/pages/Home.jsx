@@ -48,11 +48,11 @@ export default function Home({ setMe, setGame, setView }) {
   return (
     <div className="card">
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
           <Brain size={56} color="#FF0000" />
-          MindBlaster
+          <span>MindBlaster</span>
         </h1>
-        <p style={{ fontSize: '1.1rem', color: '#d4d4d4' }}>
+        <p style={{ fontSize: 'clamp(0.9rem, 3vw, 1.1rem)', color: '#f0f0f0', lineHeight: 1.4 }}>
           A deadly multiplayer game of survival. Create a room for 5 victims or join with a code if you dare...
         </p>
       </div>
@@ -62,7 +62,7 @@ export default function Home({ setMe, setGame, setView }) {
           <Gamepad2 size={24} color="#FF0000" />
           Create Death Match
         </h3>
-        <p style={{ fontSize: '0.9rem', marginBottom: 16, color: '#d4d4d4' }}>
+        <p style={{ fontSize: 'clamp(0.8rem, 2.5vw, 0.9rem)', marginBottom: 16, color: '#f0f0f0' }}>
           Start a new deadly game and invite your victims
         </p>
         
@@ -73,11 +73,11 @@ export default function Home({ setMe, setGame, setView }) {
             placeholder="Enter your name" 
             value={name} 
             onChange={e => setName(e.target.value)}
-            style={{ flex: 1, minWidth: 200 }}
+            style={{ flex: 1, minWidth: 200, fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}
           />
-          <button onClick={createGame} disabled={!name.trim()} style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+          <button onClick={createGame} disabled={!name.trim()} style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>
             <Plus size={20} />
-            Create Death Room
+            <span style={{ display: 'none' }}>Create Death Room</span>
           </button>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function Home({ setMe, setGame, setView }) {
           <LogIn size={24} color="#FF0000" />
           Join Game
         </h3>
-        <p style={{ fontSize: '0.9rem', marginBottom: 16, color: '#d4d4d4' }}>
+        <p style={{ fontSize: 'clamp(0.8rem, 2.5vw, 0.9rem)', marginBottom: 16, color: '#f0f0f0' }}>
           Enter the cursed code to join an existing death match
         </p>
         
@@ -98,17 +98,17 @@ export default function Home({ setMe, setGame, setView }) {
             placeholder="Your name" 
             value={name} 
             onChange={e => setName(e.target.value)}
-            style={{ flex: 1, minWidth: 180 }}
+            style={{ flex: 1, minWidth: 180, fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}
           />
           <input 
             placeholder="DEATH CODE" 
             value={code} 
             onChange={e => setCode(e.target.value.toUpperCase())}
-            style={{ width: 160, textAlign: 'center', fontWeight: 600, letterSpacing: 2 }}
+            style={{ width: 160, textAlign: 'center', fontWeight: 600, letterSpacing: 2, fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}
           />
-          <button onClick={joinGame} disabled={!name.trim() || !code.trim()} style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+          <button onClick={joinGame} disabled={!name.trim() || !code.trim()} style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>
             <Send size={20} />
-            Enter the Darkness
+            <span style={{ display: 'none' }}>Enter the Darkness</span>
           </button>
         </div>
       </div>
